@@ -1,5 +1,6 @@
 mod common;
 mod portfolio;
+mod views;
 
 fn main() -> color_eyre::Result<()> {
     tui::install_panic_hook();
