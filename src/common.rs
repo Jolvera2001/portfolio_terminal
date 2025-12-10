@@ -6,3 +6,10 @@ pub trait Tea {
     fn view(&self);
     fn update(&mut self);
 }
+
+pub enum ScreenID {
+    Guide,
+    Intro,
+    Projects,
+    Contact
+}

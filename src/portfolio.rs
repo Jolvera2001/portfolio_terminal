@@ -1,17 +1,27 @@
-use ratatui::Frame;
+use ratatui::{Frame};
 
-use crate::common::Screen;
+use crate::common::{Screen, ScreenID};
 
-pub struct Portfolio<'a> {
-    pub Screens: Vec<Box<dyn Screen>>,
-    pub mainFrame: &'a Frame,
+pub struct Portfolio {
+    pub screens: Vec<Box<dyn Screen>>,
+    pub current_screen: Option<ScreenID>, 
+    pub running: bool,
 }
 
-impl<'a> Portfolio<'a> {
-    pub fn new(frame: &'a Frame) -> Self {
+impl Portfolio {
+    pub fn new() -> Self {
         Self {
-            Screens: vec![],
-            mainFrame: frame,
+            screens: vec![],
+            current_screen: Some(ScreenID::Intro),
+            running: true,
         }
+    }
+
+    pub fn view(&self, frame: &mut Frame) {
+        
+    }
+
+    pub fn update(&mut self) {
+
     }
 }
