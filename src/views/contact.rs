@@ -11,3 +11,10 @@ impl Widget for &ContactScreen {
         todo!()
     }
 }
+
+
+impl ContactScreen {
+    pub fn new() -> Self {
+        Self {}
+    }
+}

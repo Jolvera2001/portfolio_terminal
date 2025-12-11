@@ -1,11 +1,21 @@
 use std::collections::HashMap;
 
+use crossterm::event::KeyEvent;
 use ratatui::Frame;
 
 use crate::{
     common::{ScreenID, ScreenType},
-    views::intro::IntroScreen,
+    comms::{Command, Msg},
+    views::{
+        contact::ContactScreen, guide::GuideScreen, intro::IntroScreen, projects::ProjectsScreen,
+    },
 };
+
+pub enum GlobalMsg {
+    Quit,
+    Navigate(ScreenID),
+    KeyPress(KeyEvent),
+}
 
 pub struct Portfolio {
     pub screens: HashMap<ScreenID, ScreenType>,
@@ -15,13 +25,15 @@ pub struct Portfolio {
 
 impl Portfolio {
     pub fn new() -> Self {
-        let screens = HashMap::new();
+        let mut screens = HashMap::new();
 
-        screens.insert(ScreenID::Guide, ScreenType::Guide(IntroScreen::new()));
+        screens.insert(ScreenID::Guide, ScreenType::Guide(GuideScreen::new()));
         screens.insert(ScreenID::Intro, ScreenType::Intro(IntroScreen::new()));
-        screens.insert(ScreenID::Projects, ScreenType::Projects(IntroScreen::new()));
-        screens.insert(ScreenID::Contact, ScreenType::Contact(IntroScreen::new()));
-
+        screens.insert(
+            ScreenID::Projects,
+            ScreenType::Projects(ProjectsScreen::new()),
+        );
+        screens.insert(ScreenID::Contact, ScreenType::Contact(ContactScreen::new()));
 
         Self {
             screens,
@@ -40,5 +52,9 @@ impl Portfolio {
         }
     }
 
-    pub fn update(&mut self) {}
+    pub fn update(&mut self, msg: Msg) -> Command<Msg> {
+        match msg {
+            Msg::Global(global_msg) => todo!(),
+        }
+    }
 }

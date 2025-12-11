@@ -1,28 +1,50 @@
 mod common;
+mod comms;
 mod portfolio;
 mod views;
 
-fn main() -> color_eyre::Result<()> {
+use std::time::Duration;
+
+use crossterm::event::{self, Event};
+use tokio::sync::mpsc;
+
+use crate::{comms::Msg, portfolio::GlobalMsg};
+
+#[tokio::main]
+async fn main() -> color_eyre::Result<()> {
     tui::install_panic_hook();
     let mut terminal = tui::init_terminal()?;
     let mut app = portfolio::Portfolio::new();
 
-    while app.running {
+    let (tx, mut rx) = mpsc::unbounded_channel();
+
+    let event_tx = tx.clone();
+    tokio::spawn(async move {
+        loop {
+            if event::poll(Duration::from_millis(100)).unwrap() {
+                if let Ok(Event::Key(key)) = event::read() {
+                    let _ = event_tx.send(Msg::Global(GlobalMsg::KeyPress(key)));
+                }
+            }
+        }
+    });
+
+    // main loop
+    loop {
         terminal.draw(|f| app.view(f))?;
 
-        app.update();
+        if let Some(msg) = rx.recv().await {
+            if matches!(msg, Msg::Global(GlobalMsg::Quit)) {
+                break;
+            }
 
-        // Handle events and map to a Message
-        // let mut current_msg = handle_event(&model)?;
+            let command = app.update(msg);
 
-        // Process updates as long as they return a non-None message
-        // while current_msg.is_some() {
-        //     current_msg = update(&mut model, current_msg.unwrap());
-        // }
+            command.execute(tx.clone());
+        }
     }
 
     tui::restore_terminal()?;
-
     Ok(())
 }
 

@@ -11,3 +11,9 @@ impl Widget for &GuideScreen {
         todo!()
     }
 }
+
+impl GuideScreen {
+    pub fn new() -> Self {
+        Self {}
+    }
+}

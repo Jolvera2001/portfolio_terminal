@@ -11,3 +11,9 @@ impl Widget for &ProjectsScreen {
         todo!()
     }
 }
+
+impl ProjectsScreen {
+    pub fn new() -> Self {
+        Self {}
+    }
+}

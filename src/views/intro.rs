@@ -11,3 +11,9 @@ impl Widget for &IntroScreen {
         todo!()
     }
 }
+
+impl IntroScreen {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
