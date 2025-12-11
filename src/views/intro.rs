@@ -1,14 +1,16 @@
-use ratatui::widgets::Widget;
+use ratatui::{prelude::*, widgets::Paragraph};
 
-pub struct IntroScreen {
-    
-}
+pub struct IntroScreen {}
 
 impl Widget for &IntroScreen {
-    fn render(self, area: ratatui::prelude::Rect, buf: &mut ratatui::prelude::Buffer)
+    fn render(self, area: Rect, buf: &mut Buffer)
     where
-        Self: Sized {
-        todo!()
+        Self: Sized,
+    {
+        let intro_text = Text::from(vec![
+            Line::from(vec!["Hello World!".into()])
+        ]);
+        Paragraph::new(intro_text).render(area, buf);
     }
 }
 

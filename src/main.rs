@@ -18,24 +18,31 @@ async fn main() -> color_eyre::Result<()> {
 
     let (tx, mut rx) = mpsc::unbounded_channel();
 
-    let event_tx = tx.clone();
-    tokio::spawn(async move {
-        loop {
-            if event::poll(Duration::from_millis(100)).unwrap() {
-                if let Ok(Event::Key(key)) = event::read() {
-                    let _ = event_tx.send(Msg::Global(GlobalMsg::KeyPress(key)));
+    let event_handle = {
+        let event_tx = tx.clone();
+        tokio::spawn(async move {
+            loop {
+                if event::poll(Duration::from_millis(100)).unwrap() {
+                    if let Ok(Event::Key(key)) = event::read() {
+                        if event_tx.send(Msg::Global(GlobalMsg::KeyPress(key))).is_err() {
+                            break;
+                        }
+                    }
                 }
             }
-        }
-    });
+        })
+    };
+
+    let mut should_quit = false;
 
     // main loop
-    loop {
+    while !should_quit {
         terminal.draw(|f| app.view(f))?;
 
         if let Some(msg) = rx.recv().await {
             if matches!(msg, Msg::Global(GlobalMsg::Quit)) {
-                break;
+                should_quit = true;
+                continue;
             }
 
             let command = app.update(msg);
@@ -43,6 +50,11 @@ async fn main() -> color_eyre::Result<()> {
             command.execute(tx.clone());
         }
     }
+
+    drop(tx);
+    drop(rx);
+    event_handle.abort();
+    let _ = event_handle.await;
 
     tui::restore_terminal()?;
     Ok(())
