@@ -32,7 +32,7 @@ impl<Msg: Send + 'static> Command<Msg> {
         }
     }
 
-    pub async fn execute(self, tx: mpsc::UnboundedSender<Msg>) {
+    pub fn execute(self, tx: mpsc::UnboundedSender<Msg>) {
         for fut in self.futures {
             let tx = tx.clone();
             tokio::spawn(async move {
