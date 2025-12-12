@@ -1,9 +1,10 @@
+use crossterm::event::KeyEvent;
 use ratatui::{prelude::*, widgets::Widget};
 
 use crate::comms::{Command, Msg};
 
 pub enum GuideMsg {
-    
+
 }
 
 pub struct GuideScreen {
@@ -15,8 +16,14 @@ impl GuideScreen {
         Self {}
     }
 
-    pub fn update() -> Command<Msg> {
-        
+    pub fn update(&mut self, msg: GuideMsg) -> Command<Msg> {
+        match msg {
+            _ => Command::none()
+        }
+    }
+
+    pub fn handle_key(key: KeyEvent) -> Command<Msg> {
+        todo!()
     }
 }
 

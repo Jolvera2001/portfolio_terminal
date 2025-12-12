@@ -68,11 +68,34 @@ impl Portfolio {
     pub fn update(&mut self, msg: Msg) -> Command<Msg> {
         match msg {
             Msg::Global(global_msg) => match global_msg {
-                GlobalMsg::KeyPress(key) => self.handle_key(key),
+                GlobalMsg::KeyPress(key) => {
+                    if let Some(screen_id) = self.current_screen {
+                        let cmd = match self.screens.get_mut(&screen_id) {
+                            Some(ScreenType::Guide(screen)) => screen.handle_key(key),
+                            None => todo!(),
+                        };
+
+                        if cmd.is_some() {
+                            return cmd;
+                        }
+                    } else {
+                        self.handle_key(key)
+                    }
+                },
                 GlobalMsg::Navigate(screen_id) => todo!(),
                 _ => Command::none(),
             },
-            Msg::Guide(guide_msg) => todo!(),
+            Msg::Guide(guide_msg) => {
+                if self.current_screen == Some(ScreenID::Guide) {
+                    if let Some(ScreenType::Guide(screen)) = self.screens.get_mut(&ScreenID::Guide) {
+                        screen.update(guide_msg)
+                    } else {
+                        Command::none()
+                    }
+                } else {
+                    Command::none()
+                }
+            },
         }
     }
 
