@@ -1,4 +1,7 @@
+use crossterm::event::KeyEvent;
 use ratatui::widgets::Widget;
+
+use crate::comms::{Command, Msg};
 
 pub struct ContactScreen {
     
@@ -16,5 +19,11 @@ impl Widget for &ContactScreen {
 impl ContactScreen {
     pub fn new() -> Self {
         Self {}
+    }
+
+    pub fn handle_key(&self, key: KeyEvent) -> Command<Msg> {
+        match key.code {
+            _ => Command::none(),
+        }
     }
 }

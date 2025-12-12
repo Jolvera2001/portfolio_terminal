@@ -24,8 +24,10 @@ async fn main() -> color_eyre::Result<()> {
             loop {
                 if event::poll(Duration::from_millis(100)).unwrap() {
                     if let Ok(Event::Key(key)) = event::read() {
-                        if event_tx.send(Msg::Global(GlobalMsg::KeyPress(key))).is_err() {
-                            break;
+                        if key.kind == event::KeyEventKind::Press {
+                            if event_tx.send(Msg::Global(GlobalMsg::KeyPress(key))).is_err() {
+                                break;
+                            }
                         }
                     }
                 }

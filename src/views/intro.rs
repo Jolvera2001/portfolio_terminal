@@ -1,4 +1,7 @@
+use crossterm::event::KeyEvent;
 use ratatui::{prelude::*, widgets::Paragraph};
+
+use crate::comms::{Command, Msg};
 
 pub struct IntroScreen {}
 
@@ -17,5 +20,11 @@ impl Widget for &IntroScreen {
 impl IntroScreen {
     pub fn new() -> Self {
         Self {}
+    }
+
+    pub fn handle_key(&self, key: KeyEvent) -> Command<Msg> {
+        match key.code {
+            _ => Command::none(),
+        }
     }
 }
