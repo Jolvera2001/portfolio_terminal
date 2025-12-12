@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
-use ratatui::Frame;
+use ratatui::{Frame, symbols::border, text::Line, widgets::Block};
 
 use crate::{
     common::{ScreenID, ScreenType},
@@ -41,11 +41,26 @@ impl Portfolio {
     }
 
     pub fn view(&self, frame: &mut Frame) {
+        let title = Line::from(" Welcome! ");
+        let instructions = Line::from(vec![
+            " Guide [1] |".into(),
+            " Intro [2] |".into(),
+            " Projects [3] |".into(),
+            " Contact [4] ".into(),
+        ]);
+
+        let main = Block::bordered()
+            .title(instructions.centered())
+            .title_bottom(title.centered())
+            .border_set(border::DOUBLE);
+
         let area = frame.area();
+        let inner = main.inner(area);
+        frame.render_widget(main, area);
 
         if let Some(screen_id) = self.current_screen {
             if let Some(screen) = self.screens.get(&screen_id) {
-                frame.render_widget(screen, area);
+                frame.render_widget(screen, inner);
             }
         }
     }
@@ -65,6 +80,10 @@ impl Portfolio {
 
         match key.code {
             KeyCode::Char('Q') if shift => Command::perform(async { Msg::Global(GlobalMsg::Quit) }),
+            KeyCode::Char('1') => todo!(),
+            KeyCode::Char('2') => todo!(),
+            KeyCode::Char('3') => todo!(),
+            KeyCode::Char('4') => todo!(),
             _ => Command::none(),
         }
     }
