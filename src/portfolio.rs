@@ -43,10 +43,10 @@ impl Portfolio {
     pub fn view(&self, frame: &mut Frame) {
         let title = Line::from(" Welcome! ");
         let instructions = Line::from(vec![
-            " Guide [1] |".into(),
-            " Intro [2] |".into(),
-            " Projects [3] |".into(),
-            " Contact [4] ".into(),
+            " Guide[1] |".into(),
+            " Intro[2] |".into(),
+            " Projects[3] |".into(),
+            " Contact[4] ".into(),
         ]);
 
         let main = Block::bordered()
@@ -72,6 +72,7 @@ impl Portfolio {
                 GlobalMsg::Navigate(screen_id) => todo!(),
                 _ => Command::none(),
             },
+            Msg::Guide(guide_msg) => todo!(),
         }
     }
 

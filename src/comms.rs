@@ -1,10 +1,11 @@
 use futures::future::BoxFuture;
 use tokio::sync::mpsc;
 
-use crate::portfolio::GlobalMsg;
+use crate::{portfolio::GlobalMsg, views::guide::GuideMsg};
 
 pub enum Msg {
     Global(GlobalMsg),
+    Guide(GuideMsg),
 }
 
 pub type CommandFuture<Msg> = BoxFuture<'static, Msg>;
