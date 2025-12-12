@@ -12,7 +12,6 @@ use crate::{
 };
 
 pub enum GlobalMsg {
-    Quit,
     Navigate(ScreenID),
     KeyPress(KeyEvent),
 }
@@ -36,7 +35,7 @@ impl Portfolio {
 
         Self {
             screens,
-            current_screen: Some(ScreenID::Intro),
+            current_screen: Some(ScreenID::Guide),
         }
     }
 
@@ -69,23 +68,25 @@ impl Portfolio {
         match msg {
             // screens manage keys and falls back to global
             Msg::Global(global_msg) => match global_msg {
-                GlobalMsg::KeyPress(key) => {
-                    if let Some(screen_id) = self.current_screen {
-                        let cmd = match self.screens.get_mut(&screen_id) {
-                            Some(ScreenType::Guide(screen)) => screen.handle_key(key),
-                            Some(ScreenType::Intro(screen)) => screen.handle_key(key),
-                            Some(ScreenType::Projects(screen)) => screen.handle_key(key),
-                            Some(ScreenType::Contact(screen)) => screen.handle_key(key),
-                            None => todo!(),
-                        };
-
-                        if cmd.is_some() {
-                            cmd
+                GlobalMsg::KeyPress(key) => match key.code {
+                    KeyCode::Char('1') => Command::perform(async {
+                        Msg::Global(GlobalMsg::Navigate(ScreenID::Guide))
+                    }),
+                    KeyCode::Char('2') => todo!(),
+                    KeyCode::Char('3') => todo!(),
+                    KeyCode::Char('4') => todo!(),
+                    _ => {
+                        if let Some(screen_id) = self.current_screen {
+                            match self.screens.get_mut(&screen_id) {
+                                Some(ScreenType::Guide(screen)) => screen.handle_key(key),
+                                Some(ScreenType::Intro(screen)) => screen.handle_key(key),
+                                Some(ScreenType::Projects(screen)) => screen.handle_key(key),
+                                Some(ScreenType::Contact(screen)) => screen.handle_key(key),
+                                None => Command::none(),
+                            }
                         } else {
-                            self.handle_key(key)
+                            Command::none()
                         }
-                    } else {
-                        self.handle_key(key)
                     }
                 },
                 GlobalMsg::Navigate(screen_id) => {
@@ -99,14 +100,15 @@ impl Portfolio {
                     } else {
                         Command::none()
                     }
-                },
+                }
                 _ => Command::none(),
             },
 
             // screen specific commands
             Msg::Guide(guide_msg) => {
                 if self.current_screen == Some(ScreenID::Guide) {
-                    if let Some(ScreenType::Guide(screen)) = self.screens.get_mut(&ScreenID::Guide) {
+                    if let Some(ScreenType::Guide(screen)) = self.screens.get_mut(&ScreenID::Guide)
+                    {
                         screen.update(guide_msg)
                     } else {
                         Command::none()
@@ -114,20 +116,7 @@ impl Portfolio {
                 } else {
                     Command::none()
                 }
-            },
-        }
-    }
-
-    fn handle_key(&mut self, key: KeyEvent) -> Command<Msg> {
-        let shift = key.modifiers.contains(KeyModifiers::SHIFT);
-
-        match key.code {
-            KeyCode::Char('Q') if shift => Command::perform(async { Msg::Global(GlobalMsg::Quit) }),
-            KeyCode::Char('1') => Command::perform(async { Msg::Global(GlobalMsg::Navigate(ScreenID::Guide))}),
-            KeyCode::Char('2') => todo!(),
-            KeyCode::Char('3') => todo!(),
-            KeyCode::Char('4') => todo!(),
-            _ => Command::none(),
+            }
         }
     }
 }

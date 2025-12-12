@@ -25,7 +25,10 @@ async fn main() -> color_eyre::Result<()> {
                 if event::poll(Duration::from_millis(100)).unwrap() {
                     if let Ok(Event::Key(key)) = event::read() {
                         if key.kind == event::KeyEventKind::Press {
-                            if event_tx.send(Msg::Global(GlobalMsg::KeyPress(key))).is_err() {
+                            if event_tx
+                                .send(Msg::Global(GlobalMsg::KeyPress(key)))
+                                .is_err()
+                            {
                                 break;
                             }
                         }
@@ -35,21 +38,28 @@ async fn main() -> color_eyre::Result<()> {
         })
     };
 
+
     let mut should_quit = false;
 
     // main loop
     while !should_quit {
         terminal.draw(|f| app.view(f))?;
 
-        if let Some(msg) = rx.recv().await {
-            if matches!(msg, Msg::Global(GlobalMsg::Quit)) {
-                should_quit = true;
-                continue;
+        tokio::select! {
+            Some(msg) = rx.recv() => {
+                if let Msg::Global(GlobalMsg::KeyPress(key)) = &msg {
+                    let shift = key.modifiers.contains(crossterm::event::KeyModifiers::SHIFT);
+                    if matches!(key.code, crossterm::event::KeyCode::Char('Q')) && shift {
+                        should_quit = true;
+                        continue;
+                    }
+                }
+
+                let command = app.update(msg);
+                command.execute(tx.clone());
             }
 
-            let command = app.update(msg);
-
-            command.execute(tx.clone());
+            _ = tokio::time::sleep(Duration::from_millis(16)) => {}
         }
     }
 

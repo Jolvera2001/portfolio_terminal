@@ -42,8 +42,4 @@ impl<Msg: Send + 'static> Command<Msg> {
             });
         }
     }
-
-    pub fn is_some(&self) -> bool {
-        !self.futures.is_empty()
-    }
 }
