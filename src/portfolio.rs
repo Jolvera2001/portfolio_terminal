@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{Frame, symbols::border, text::Line, widgets::Block};
 
 use crate::{
@@ -72,9 +72,15 @@ impl Portfolio {
                     KeyCode::Char('1') => Command::perform(async {
                         Msg::Global(GlobalMsg::Navigate(ScreenID::Guide))
                     }),
-                    KeyCode::Char('2') => todo!(),
-                    KeyCode::Char('3') => todo!(),
-                    KeyCode::Char('4') => todo!(),
+                    KeyCode::Char('2') => Command::perform(async {
+                        Msg::Global(GlobalMsg::Navigate(ScreenID::Intro))
+                    }),
+                    KeyCode::Char('3') => Command::perform(async {
+                        Msg::Global(GlobalMsg::Navigate(ScreenID::Projects))
+                    }),
+                    KeyCode::Char('4') => Command::perform(async {
+                        Msg::Global(GlobalMsg::Navigate(ScreenID::Contact))
+                    }),
                     _ => {
                         if let Some(screen_id) = self.current_screen {
                             match self.screens.get_mut(&screen_id) {

@@ -1,5 +1,5 @@
 use crossterm::event::KeyEvent;
-use ratatui::widgets::Widget;
+use ratatui::{text::{Line, Text}, widgets::{Paragraph, Widget}};
 
 use crate::comms::{Command, Msg};
 
@@ -11,7 +11,8 @@ impl Widget for &ProjectsScreen {
     fn render(self, area: ratatui::prelude::Rect, buf: &mut ratatui::prelude::Buffer)
     where
         Self: Sized {
-        todo!()
+        let intro_text = Text::from(vec![Line::from(vec!["Hello World!".into()])]);
+        Paragraph::new(intro_text).render(area, buf);
     }
 }
 

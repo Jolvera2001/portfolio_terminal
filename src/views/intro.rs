@@ -3,6 +3,7 @@ use ratatui::{prelude::*, widgets::Paragraph};
 
 use crate::comms::{Command, Msg};
 
+pub struct IntroScreenContent {}
 pub struct IntroScreen {}
 
 impl Widget for &IntroScreen {
@@ -10,9 +11,7 @@ impl Widget for &IntroScreen {
     where
         Self: Sized,
     {
-        let intro_text = Text::from(vec![
-            Line::from(vec!["Hello World!".into()])
-        ]);
+        let intro_text = Text::from(vec![Line::from(vec!["Hello World!".into()])]);
         Paragraph::new(intro_text).render(area, buf);
     }
 }
