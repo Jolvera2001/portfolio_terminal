@@ -5,7 +5,7 @@ mod views;
 
 use std::time::Duration;
 
-use crossterm::event::{self, Event};
+use crossterm::event::{self, Event, KeyCode, KeyModifiers};
 use tokio::sync::mpsc;
 
 use crate::{comms::Msg, portfolio::GlobalMsg};
@@ -48,8 +48,8 @@ async fn main() -> color_eyre::Result<()> {
         tokio::select! {
             Some(msg) = rx.recv() => {
                 if let Msg::Global(GlobalMsg::KeyPress(key)) = &msg {
-                    let shift = key.modifiers.contains(crossterm::event::KeyModifiers::SHIFT);
-                    if matches!(key.code, crossterm::event::KeyCode::Char('Q')) && shift {
+                    let shift = key.modifiers.contains(KeyModifiers::SHIFT);
+                    if matches!(key.code, KeyCode::Char('Q')) && shift {
                         should_quit = true;
                         continue;
                     }

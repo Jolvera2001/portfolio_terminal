@@ -101,7 +101,6 @@ impl Portfolio {
                         Command::none()
                     }
                 }
-                _ => Command::none(),
             },
 
             // screen specific commands
