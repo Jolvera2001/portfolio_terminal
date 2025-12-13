@@ -1,10 +1,17 @@
 use crossterm::event::KeyEvent;
 use ratatui::{prelude::*, widgets::Paragraph};
+use serde::{Deserialize, Serialize};
 
 use crate::comms::{Command, Msg};
 
-pub struct IntroScreenContent {}
-pub struct IntroScreen {}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct IntroScreenContent {
+
+}
+
+pub struct IntroScreen {
+    content: IntroScreenContent
+}
 
 impl Widget for &IntroScreen {
     fn render(self, area: Rect, buf: &mut Buffer)
