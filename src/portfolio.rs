@@ -133,9 +133,8 @@ fn fetch_files() -> Result<IntroScreenContent, eyre::Error> {
     let project_root = env::current_dir()?;
     let assets_path = project_root.join("assets");
 
-    let intro_content = match fs::read_to_string(assets_path.join("IntroScreenContent.ron")) {
+    let intro_content = match fs::read_to_string(assets_path.join("intro_screen_content.ron")) {
         Ok(content) => {
-            println!("Successfully read file!");
             content
         },
         Err(e) => {
@@ -145,11 +144,9 @@ fn fetch_files() -> Result<IntroScreenContent, eyre::Error> {
 
     let intro_content_deser = match ron::from_str(&intro_content) {
         Ok(content) => {
-            println!("Successfully read file!");
             content
         },
         Err(e) => {
-            println!("ERROR: {}", e.to_string());
             return Err(e.into())
         },
     };

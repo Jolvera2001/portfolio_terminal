@@ -12,8 +12,6 @@ pub enum GuideMsg {
 }
 
 pub struct GuideScreen {
-    cols: usize,
-    rows: usize,
     cursor: usize,
     options: Vec<String>,
 }
@@ -73,8 +71,6 @@ impl Widget for &GuideScreen {
 impl GuideScreen {
     pub fn new() -> Self {
         Self {
-            cols: 2,
-            rows: 1,
             cursor: 0,
             options: vec![
                 "Hello world!".to_string(),
