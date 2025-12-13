@@ -1,5 +1,6 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, env, fs, path::Path};
 
+use color_eyre::eyre;
 use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{Frame, symbols::border, text::Line, widgets::Block};
 
@@ -7,7 +8,7 @@ use crate::{
     common::{ScreenID, ScreenType},
     comms::{Command, Msg},
     views::{
-        contact::ContactScreen, guide::GuideScreen, intro::IntroScreen, projects::ProjectsScreen,
+        contact::ContactScreen, guide::GuideScreen, intro::{IntroScreen, IntroScreenContent}, projects::ProjectsScreen,
     },
 };
 
@@ -24,9 +25,10 @@ pub struct Portfolio {
 impl Portfolio {
     pub fn new() -> Self {
         let mut screens = HashMap::new();
+        let content = fetch_files().unwrap();
 
         screens.insert(ScreenID::Guide, ScreenType::Guide(GuideScreen::new()));
-        screens.insert(ScreenID::Intro, ScreenType::Intro(IntroScreen::new()));
+        screens.insert(ScreenID::Intro, ScreenType::Intro(IntroScreen::new(content)));
         screens.insert(
             ScreenID::Projects,
             ScreenType::Projects(ProjectsScreen::new()),
@@ -124,4 +126,15 @@ impl Portfolio {
             }
         }
     }
+
+}
+
+fn fetch_files() -> Result<IntroScreenContent, eyre::Error> {
+    let project_root = env::current_dir()?;
+    let assets_path = project_root.join("assets");
+
+    let intro_content = fs::read_to_string(assets_path.join("IntroScreenContent.ron"))?;
+    let intro_content_deser = ron::from_str(&intro_content)?;
+
+    Ok(intro_content_deser)
 }
