@@ -25,7 +25,7 @@ pub struct Portfolio {
 impl Portfolio {
     pub fn new() -> Self {
         let mut screens = HashMap::new();
-        let content = fetch_files().unwrap();
+        let content = fetch_files().unwrap_or_else(|_| IntroScreenContent::default());
 
         screens.insert(ScreenID::Guide, ScreenType::Guide(GuideScreen::new()));
         screens.insert(ScreenID::Intro, ScreenType::Intro(IntroScreen::new(content)));
@@ -133,8 +133,26 @@ fn fetch_files() -> Result<IntroScreenContent, eyre::Error> {
     let project_root = env::current_dir()?;
     let assets_path = project_root.join("assets");
 
-    let intro_content = fs::read_to_string(assets_path.join("IntroScreenContent.ron"))?;
-    let intro_content_deser = ron::from_str(&intro_content)?;
+    let intro_content = match fs::read_to_string(assets_path.join("IntroScreenContent.ron")) {
+        Ok(content) => {
+            println!("Successfully read file!");
+            content
+        },
+        Err(e) => {
+            return Err(e.into())
+        },
+    };
+
+    let intro_content_deser = match ron::from_str(&intro_content) {
+        Ok(content) => {
+            println!("Successfully read file!");
+            content
+        },
+        Err(e) => {
+            println!("ERROR: {}", e.to_string());
+            return Err(e.into())
+        },
+    };
 
     Ok(intro_content_deser)
 }

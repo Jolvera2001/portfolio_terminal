@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
 use crossterm::event::KeyEvent;
-use ratatui::{prelude::*, widgets::Paragraph};
+use ratatui::{prelude::*, widgets::{Paragraph, Wrap}};
 use serde::{Deserialize, Serialize};
 
 use crate::comms::{Command, Msg};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct IntroScreenContent {
     sections: HashMap<String, String>,
     order: Vec<String>,
@@ -32,7 +32,9 @@ impl Widget for &IntroScreen {
             .map(|text| Text::from(text.as_str()))
             .unwrap_or_else(|| Text::from(""));
 
-        Paragraph::new(intro_text).render(area, buf);
+        Paragraph::new(intro_text)
+        .wrap(Wrap { trim: true })
+        .render(area, buf);
     }
 }
 
