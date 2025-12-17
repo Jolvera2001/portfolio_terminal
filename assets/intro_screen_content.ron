@@ -1,42 +1,45 @@
 IntroScreenContent(
     sections: {
-        "Who am I?": r#"I'm Johan Olvera, and I'm currently workin as a software engineer. I've been coding for about 6 years 
-        now and I have been focusing on trying to get a completed portfolio site."#,
-        "What do I know?": r#"I've mostly been exploring projects I could do but I've never really been able to finish one.
+        "Who am I?": [
+            "I'm Johan Olvera, and I'm currently workin as a software engineer. I've been coding for about 6 years 
+            now and I have been focusing on trying to get a completed portfolio site."
+        ],
+        "What do I know?": [
+            "I've mostly been exploring projects I could do but I've never really been able to finish one.
             I tend to jump around different subjects and domains and move onto another after some time. I
-            intend to make this project a sort of 'official' completed project using Rust.
-
-            One of the things that interests me is seeing how editors and apps touching areas of editing files
+            intend to make this project a sort of 'official' completed project using Rust.",
+            "One of the things that interests me is seeing how editors and apps touching areas of editing files
             work, since it goes over things like file editing and document representation like Obsidian, and 
-            can expand to things like making a database for what you write, plugins for this editor, etc. 
-            
-            The majority of apps I have tried making are mostly desktop and GUI apps, and I've made servers
+            can expand to things like making a database for what you write, plugins for this editor, etc.",
+            "The majority of apps I have tried making are mostly desktop and GUI apps, and I've made servers
             and websites using frameworks like ASP.NET and Ktor in the past. Javascript/Typescript isn't really
             my strong suite and I was more active using frameworks like React during college, but I've been SLOWLY
-            going back to the Js/Ts scene .
-            
-            In terms of languages, I'm more knowledgeable in C# and have been learning others in my free time.
+            going back to the Js/Ts scene.",
+            "In terms of languages, I'm more knowledgeable in C# and have been learning others in my free time.
             It's been mainly Rust using frameworks like Egui, Iced, and Ratatui, which this project is based on.
-            Other languages I've dabbled in include:
-              - Kotlin
+            Other languages I've dabbled in include:",
+            "  - Kotlin
               - Python
               - Go
               - Js/Ts
-              - Ruby
-            
-            I'm planning to learn C++ pretty soon since I think I've taken way too long avoiding it and my college
-            classes never really introduced me to it"#,
-        "Why a portfolio in the terminal?": r#"For some reason I've been very much scared of doing a portfolio site in normal HTML because I end up
+              - Ruby",
+            "I'm planning to learn C++ pretty soon since I think I've taken way too long avoiding it and my college
+            classes never really introduced me to it"
+        ],
+        "Why a portfolio in the terminal?": [
+            "For some reason I've been very much scared of doing a portfolio site in normal HTML because I end up
             getting caught up in things like styling, presentation, etc. After seeing terminal.shop, it sort of inspired me
             to try and create a similar app in the terminal, and I thought it would be great to do my portfolio in this manner.
             I don't have to worry much about styling and I'm restricted to the terminal which will (hopefully) drive me
-            to be more creative in how I approach presenting who I am for others to see. 
-            
-            I think after this ends up being finished, I'll create a sort of follow-up site for people who don't want to ssh to 
-            this app. From there I'll have to get over my issues with styling in HTML"#,
-        "Acknowledgements": r#"As mentioned before in the last section, terminal.shop was the inspiration for this app and I would recommend
-            taking a look at that within your own terminal. Just do "ssh terminal.shop" and you should be good to go! It's a pretty
-            cool place especially with how the ssh just gives a TUI for you to navigate."#,
+            to be more creative in how I approach presenting who I am for others to see.", 
+            "I think after this ends up being finished, I'll create a sort of follow-up site for people who don't want to ssh to 
+            this app. From there I'll have to get over my issues with styling in HTML",
+        ],
+        "Acknowledgements": [
+            "As mentioned before in the last section, terminal.shop was the inspiration for this app and I would recommend
+            taking a look at that within your own terminal. Just do \"ssh terminal.shop\" and you should be good to go! It's a pretty
+            cool place especially with how the ssh just gives a TUI for you to navigate.",
+        ]
     },
     order: [
         "Who am I?",

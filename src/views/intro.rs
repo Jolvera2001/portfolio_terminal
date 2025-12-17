@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     prelude::*,
-    widgets::{Paragraph, Wrap},
+    widgets::{Block, List, ListItem, Paragraph, Wrap},
 };
 use serde::{Deserialize, Serialize};
 
@@ -16,7 +16,7 @@ pub enum IntroMsg {
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct IntroScreenContent {
-    sections: HashMap<String, String>,
+    sections: HashMap<String, Vec<String>>,
     order: Vec<String>,
 }
 
@@ -30,19 +30,57 @@ impl Widget for &IntroScreen {
     where
         Self: Sized,
     {
-        let key = self.content.order.get(self.cursor);
+        let chunks = Layout::horizontal([
+            Constraint::Fill(1),
+            Constraint::Percentage(40),
+            Constraint::Fill(1),
+            Constraint::Percentage(50),
+            Constraint::Fill(1),
+        ])
+        .split(area);
+
+        let text_area = chunks[3];
+
+        let vertical_chunks = Layout::vertical([
+            Constraint::Fill(1),
+            Constraint::Percentage(75),
+            Constraint::Fill(1),
+        ])
+        .split(text_area);
+
+        let items: Vec<ListItem> = self
+            .content
+            .order
+            .iter()
+            .enumerate()
+            .map(|(i, option)| {
+                let prefix = if i == self.cursor { "> " } else { " " };
+                let style = if i == self.cursor {
+                    Style::default().fg(Color::Yellow).bold()
+                } else {
+                    Style::default()
+                };
+                ListItem::new(format!("{}{}", prefix, option)).style(style)
+            })
+            .collect();
+
+        let list = List::new(items).block(Block::bordered().title("About Me"));
+        Widget::render(list, chunks[1], buf);
 
         let intro_text = self
             .content
             .order
             .get(self.cursor)
             .and_then(|k| self.content.sections.get(k))
-            .map(|text| Text::from(text.as_str()))
+            .map(|paragraphs| {
+                let text = paragraphs.join("\n\n");
+                Text::from(text)
+            })
             .unwrap_or_else(|| Text::from(""));
 
-        Paragraph::new(intro_text)
-            .wrap(Wrap { trim: true })
-            .render(area, buf);
+        let selected_text = Paragraph::new(intro_text).wrap(Wrap { trim: true });
+
+        Widget::render(selected_text, vertical_chunks[1], buf);
     }
 }
 
