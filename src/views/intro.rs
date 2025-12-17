@@ -12,6 +12,8 @@ use crate::comms::{Command, Msg};
 pub enum IntroMsg {
     CursorUp,
     CursorDown,
+    ScrollUp,
+    ScrollDown,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -23,6 +25,7 @@ pub struct IntroScreenContent {
 pub struct IntroScreen {
     cursor: usize,
     content: IntroScreenContent,
+    scroll: usize,
 }
 
 impl Widget for &IntroScreen {
@@ -78,7 +81,9 @@ impl Widget for &IntroScreen {
             })
             .unwrap_or_else(|| Text::from(""));
 
-        let selected_text = Paragraph::new(intro_text).wrap(Wrap { trim: true });
+        let selected_text = Paragraph::new(intro_text)
+            .wrap(Wrap { trim: true })
+            .scroll((self.scroll as u16, 0));
 
         Widget::render(selected_text, vertical_chunks[1], buf);
     }
@@ -86,7 +91,11 @@ impl Widget for &IntroScreen {
 
 impl IntroScreen {
     pub fn new(content: IntroScreenContent) -> Self {
-        Self { cursor: 0, content }
+        Self {
+            cursor: 0,
+            content,
+            scroll: 0,
+        }
     }
 
     pub fn update(&mut self, message: IntroMsg) -> Command<Msg> {
@@ -94,15 +103,25 @@ impl IntroScreen {
             IntroMsg::CursorUp => {
                 if self.cursor > 0 {
                     self.cursor -= 1;
+                    self.scroll = 0;
                 }
                 Command::none()
             }
             IntroMsg::CursorDown => {
                 if self.cursor < self.content.order.len() - 1 {
                     self.cursor += 1;
+                    self.scroll = 0;
                 }
                 Command::none()
             }
+            IntroMsg::ScrollUp => {
+                self.scroll = self.scroll.saturating_sub(1);
+                Command::none()
+            },
+            IntroMsg::ScrollDown => {
+                self.scroll += 1;
+                Command::none()
+            },
         }
     }
 
@@ -113,6 +132,12 @@ impl IntroScreen {
             }
             KeyCode::Char('s') | KeyCode::Down => {
                 Command::perform(async { Msg::Intro(IntroMsg::CursorDown) })
+            }
+            KeyCode::Char('j') | KeyCode::PageUp => {
+                Command::perform(async { Msg::Intro(IntroMsg::ScrollUp) })
+            }
+            KeyCode::Char('k') | KeyCode::PageDown => {
+                Command::perform(async { Msg::Intro(IntroMsg::ScrollDown) })
             }
             _ => Command::none(),
         }
