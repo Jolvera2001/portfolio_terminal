@@ -1,0 +1,7 @@
+[
+    ProjectItem(
+        title: "Portfolio Terminal",
+        main_language: "Rust",
+        description: "An app to allow people to ssh to view my portfolio in a way to showcase my skills and to learn more about me"
+    ),
+]
