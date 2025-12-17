@@ -8,7 +8,10 @@ use crate::{
     common::{ScreenID, ScreenType},
     comms::{Command, Msg},
     views::{
-        contact::ContactScreen, guide::GuideScreen, intro::{IntroScreen, IntroScreenContent}, projects::ProjectsScreen,
+        contact::ContactScreen,
+        guide::GuideScreen,
+        intro::{IntroScreen, IntroScreenContent},
+        projects::ProjectsScreen,
     },
 };
 
@@ -28,7 +31,10 @@ impl Portfolio {
         let content = fetch_files().unwrap_or_else(|_| IntroScreenContent::default());
 
         screens.insert(ScreenID::Guide, ScreenType::Guide(GuideScreen::new()));
-        screens.insert(ScreenID::Intro, ScreenType::Intro(IntroScreen::new(content)));
+        screens.insert(
+            ScreenID::Intro,
+            ScreenType::Intro(IntroScreen::new(content)),
+        );
         screens.insert(
             ScreenID::Projects,
             ScreenType::Projects(ProjectsScreen::new()),
@@ -68,7 +74,6 @@ impl Portfolio {
 
     pub fn update(&mut self, msg: Msg) -> Command<Msg> {
         match msg {
-            // screens manage keys and falls back to global
             Msg::Global(global_msg) => match global_msg {
                 GlobalMsg::KeyPress(key) => match key.code {
                     KeyCode::Char('1') => Command::perform(async {
@@ -110,8 +115,6 @@ impl Portfolio {
                     }
                 }
             },
-
-            // screen specific commands
             Msg::Guide(guide_msg) => {
                 if self.current_screen == Some(ScreenID::Guide) {
                     if let Some(ScreenType::Guide(screen)) = self.screens.get_mut(&ScreenID::Guide)
@@ -124,9 +127,20 @@ impl Portfolio {
                     Command::none()
                 }
             }
+            Msg::Intro(intro_msg) => {
+                if self.current_screen == Some(ScreenID::Intro) {
+                    if let Some(ScreenType::Intro(screen)) = self.screens.get_mut(&ScreenID::Intro)
+                    {
+                        screen.update(intro_msg)
+                    } else {
+                        Command::none()
+                    }
+                } else {
+                    Command::none()
+                }
+            }
         }
     }
-
 }
 
 fn fetch_files() -> Result<IntroScreenContent, eyre::Error> {
@@ -134,21 +148,13 @@ fn fetch_files() -> Result<IntroScreenContent, eyre::Error> {
     let assets_path = project_root.join("assets");
 
     let intro_content = match fs::read_to_string(assets_path.join("intro_screen_content.ron")) {
-        Ok(content) => {
-            content
-        },
-        Err(e) => {
-            return Err(e.into())
-        },
+        Ok(content) => content,
+        Err(e) => return Err(e.into()),
     };
 
     let intro_content_deser = match ron::from_str(&intro_content) {
-        Ok(content) => {
-            content
-        },
-        Err(e) => {
-            return Err(e.into())
-        },
+        Ok(content) => content,
+        Err(e) => return Err(e.into()),
     };
 
     Ok(intro_content_deser)
