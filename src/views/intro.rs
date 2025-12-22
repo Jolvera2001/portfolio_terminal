@@ -76,7 +76,19 @@ impl Widget for &IntroScreen {
             .get(self.cursor)
             .and_then(|k| self.content.sections.get(k))
             .map(|paragraphs| {
-                let text = paragraphs.join("\n\n");
+                // let text = paragraphs.join("\n\n");
+                // Text::from(text)
+
+                let cleaned: Vec<String> = paragraphs
+                    .iter()
+                    .map(|p| {
+                        p.lines()
+                            .map(|line| line.trim())
+                            .collect::<Vec<_>>()
+                            .join(" ")
+                    })
+                    .collect();
+                let text = cleaned.join("\n\n");
                 Text::from(text)
             })
             .unwrap_or_else(|| Text::from(""));
@@ -117,11 +129,11 @@ impl IntroScreen {
             IntroMsg::ScrollUp => {
                 self.scroll = self.scroll.saturating_sub(1);
                 Command::none()
-            },
+            }
             IntroMsg::ScrollDown => {
                 self.scroll += 1;
                 Command::none()
-            },
+            }
         }
     }
 
