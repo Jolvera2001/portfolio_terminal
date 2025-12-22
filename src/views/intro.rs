@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::{
     prelude::*,
-    widgets::{Block, List, ListItem, Paragraph, Wrap},
+    widgets::{Block, Borders, List, ListItem, Paragraph, Wrap},
 };
 use serde::{Deserialize, Serialize};
 
@@ -46,7 +46,7 @@ impl Widget for &IntroScreen {
 
         let vertical_chunks = Layout::vertical([
             Constraint::Fill(1),
-            Constraint::Percentage(75),
+            Constraint::Percentage(90),
             Constraint::Fill(1),
         ])
         .split(text_area);
@@ -76,9 +76,6 @@ impl Widget for &IntroScreen {
             .get(self.cursor)
             .and_then(|k| self.content.sections.get(k))
             .map(|paragraphs| {
-                // let text = paragraphs.join("\n\n");
-                // Text::from(text)
-
                 let cleaned: Vec<String> = paragraphs
                     .iter()
                     .map(|p| {
@@ -95,6 +92,12 @@ impl Widget for &IntroScreen {
 
         let selected_text = Paragraph::new(intro_text)
             .wrap(Wrap { trim: true })
+            .block(
+                Block::bordered()
+                    .title("[Scroll up: J, Scroll down: K]")
+                    .title_alignment(Alignment::Center)
+                    .borders(Borders::TOP | Borders::BOTTOM),
+            )
             .scroll((self.scroll as u16, 0));
 
         Widget::render(selected_text, vertical_chunks[1], buf);
