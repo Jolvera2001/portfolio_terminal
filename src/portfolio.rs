@@ -1,4 +1,4 @@
-use std::{collections::HashMap, env, fs, path::Path};
+use std::{collections::HashMap, env, fs};
 
 use color_eyre::eyre;
 use crossterm::event::{KeyCode, KeyEvent};
