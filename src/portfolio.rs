@@ -126,12 +126,24 @@ impl Portfolio {
                 } else {
                     Command::none()
                 }
-            }
+            },
             Msg::Intro(intro_msg) => {
                 if self.current_screen == Some(ScreenID::Intro) {
                     if let Some(ScreenType::Intro(screen)) = self.screens.get_mut(&ScreenID::Intro)
                     {
                         screen.update(intro_msg)
+                    } else {
+                        Command::none()
+                    }
+                } else {
+                    Command::none()
+                }
+            },
+            Msg::Projects(project_msg) => {
+                if self.current_screen == Some(ScreenID::Projects) {
+                    if let Some(ScreenType::Projects(screen)) = self.screens.get_mut(&ScreenID::Projects)
+                    {
+                        screen.update(project_msg)
                     } else {
                         Command::none()
                     }

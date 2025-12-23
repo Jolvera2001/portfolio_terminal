@@ -3,13 +3,14 @@ use tokio::sync::mpsc;
 
 use crate::{
     portfolio::GlobalMsg,
-    views::{guide::GuideMsg, intro::IntroMsg},
+    views::{guide::GuideMsg, intro::IntroMsg, projects::ProjectMsg},
 };
 
 pub enum Msg {
     Global(GlobalMsg),
     Guide(GuideMsg),
     Intro(IntroMsg),
+    Projects(ProjectMsg),
 }
 
 pub type CommandFuture<Msg> = BoxFuture<'static, Msg>;
